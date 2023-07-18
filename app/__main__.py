@@ -1,14 +1,15 @@
+import uvicorn
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import uvicorn
-
-# from app import api
+from app import api
+from app.db.postgres.register import init_db
 
 
 def create_app() -> FastAPI:
     app = FastAPI()
-    # app.include_router() # api.router
+    app.include_router(api.router)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -17,11 +18,14 @@ def create_app() -> FastAPI:
         allow_headers=["*"]
     )
 
-    # register tortoise orm
-
     return app
 
 app = create_app()
+
+@app.on_event("startup")
+async def startup_event():
+    print("Starting up...")
+    init_db(app)
 
 if __name__ == "__main__":
     uvicorn.run(
