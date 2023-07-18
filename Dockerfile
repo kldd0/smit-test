@@ -10,14 +10,12 @@ RUN apk update && apk add postgresql-dev gcc musl-dev python3-dev libffi-dev ope
 
 RUN pip install --upgrade pip
 
-COPY poetry.toml pyproject.toml poetry.lock /service/
+COPY . /service/
 
 RUN pip install poetry \
     && poetry config virtualenvs.create false \
     && poetry config installer.max-workers 10 \
     && poetry install --no-dev --no-root --no-interaction --no-ansi -vvv
-
-COPY . /service/
 
 CMD ["poetry", "run", "python", "-m", "app"]
 

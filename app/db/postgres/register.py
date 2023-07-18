@@ -3,11 +3,23 @@ from tortoise.contrib.fastapi import register_tortoise
 from app.config import settings
 
 
-TORTOISE_ORM = {
-    "connections": {"default": str(settings.db_uri)},
+DB_MODELS = ["app.db.postgres.models"]
+TORTOISE_ORM_CONFIG = {
+    "connections": {
+        "default": {
+            "engine": 'tortoise.backends.asyncpg',
+            "credentials": {
+                "host": settings.postgres_host,
+                "port": settings.postgres_port,
+                "user": settings.postgres_user,
+                "password": settings.postgres_password,
+                "database": settings.postgres_db,
+            }
+        },
+    },
     "apps": {
         "models": {
-            "models": ["models"],
+            "models": DB_MODELS,
             "default_connection": "default",
         },
     },
@@ -17,9 +29,7 @@ TORTOISE_ORM = {
 def init_db(app: FastAPI) -> None:
     register_tortoise(
         app,
-        db_url=settings.db_uri,
-        modules={"models": ["app.db.models"]},
+        config=TORTOISE_ORM_CONFIG,
         generate_schemas=True,
         add_exception_handlers=True,
     )
-    
