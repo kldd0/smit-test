@@ -24,7 +24,6 @@ app = create_app()
 
 @app.on_event("startup")
 async def startup_event():
-    print("Starting up...")
     init_db(app)
 
 if __name__ == "__main__":

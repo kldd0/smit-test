@@ -4,14 +4,14 @@ from datetime import date
 
 from app.dto.rate import Rate
 
-router = APIRouter(prefix="/load_rate", tags=["Cargo rate"])
+router = APIRouter(prefix="/rate", tags=["Cargo rate"])
 
 
-@router.post("")
+@router.post("/load")
 async def load_rate(input_payload: dict[date, List[Rate]]) -> str:
     try:
         print(input_payload)
         return "ok"
     except Exception as e:
         print(e)
-        return "Failed loading"
+        return "Failed loading JSON"
